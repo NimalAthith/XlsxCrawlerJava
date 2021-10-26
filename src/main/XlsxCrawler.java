@@ -5,16 +5,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class XlsxCrawler {
 
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws Exception{
 		// Loading Xlsx
 		FileInputStream file = new FileInputStream(new File("./Bom_Compare.xlsx"));
 		
@@ -77,6 +81,7 @@ public class XlsxCrawler {
 					System.out.println(partname);
 					String filename = matchFile(partname, listDir);
 					System.out.println(filename);
+					compare(filename);
 				}
 			}
 		}
@@ -116,10 +121,63 @@ public class XlsxCrawler {
 		return filename;
 	}
 	
-	public static void compare(String filename) throws IOException {
+	public static void compare(String filename) throws Exception {
 		FileInputStream srcfile = new FileInputStream("./source/" + filename);
 		
 		XSSFWorkbook wb = new XSSFWorkbook(srcfile);
+		XSSFSheet ws = wb.getSheetAt(0);
+		
+	//	int rowCount = ws.getPhysicalNumberOfRows();
+	/*	
+		for (int i = 8; i < rowCount; i++) {
+			Row thisRow = ws.getRow(i);
+			Iterator<Cell> cellIterator = thisRow.cellIterator();
+			Cell cell = cellIterator.next();
+			
+			if(cell == null || cell.getCellType() == CellType.BLANK) {
+				System.out.println("No Difference");
+				break;
+			}
+			
+			
+			
+			
+			
+		}
+		*/
+		outerloop:
+		for (int rowIndex = 9 ; rowIndex <= ws.getLastRowNum(); rowIndex++) {
+			
+			XSSFRow row = ws.getRow(rowIndex);
+			
+			Cell cell = row.getCell(0);
+			String out = cell.getStringCellValue();
+			boolean va = true;
+			try{
+			va = out != "";
+			}
+			finally
+			{
+			System.out.println("Try");
+			boolean po;
+			po = false;
+			
+			if(va)
+				po = true;
+			
+			System.out.println(po);
+			if (po){
+					
+				
+				System.out.println("No Difference");
+				break outerloop;}
+			
+			}
+				
+			
+			
+			
+		}
 	}
 		
 
